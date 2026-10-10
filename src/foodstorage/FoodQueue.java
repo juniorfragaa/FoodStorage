@@ -31,11 +31,35 @@ public class FoodQueue {
         this.front = -1;  // -1 = not pointing to any tray
         this.rear = -1;   // so the queue starts empty
     }   
+    
     public boolean isEmpty(){
         return front == -1; // Return true if the storage has no food
     }
+    
     public boolean isFull(){
         return (rear + 1) % capacity == front; // returns true if there is no free tray left
     }
+    // Adds a food item at the rear of the queue
+    public void enqueue (String name, int weight, LocalDate date){
+    
+        // 1. If there is no free tray, stop here
+        if(isFull()){
+            System.out.println("Error: The storage is Full. Remove an item first");
+            return;
+        }
+        // 2. If it is the first item, front leaves -1 and goes to tray 0
+        if(isEmpty()){
+            front = 0;
+        }
+        // 3. Move rear one step, After the last tray, it goes back to 0.
+        rear = (rear + 1) % capacity;
+        // 4. Save the food data in the same index of every array
+        names[rear] = name;
+        weights [rear] = weight;
+        bestBefore[rear] = date;
+        timeAdded[rear] = LocalDateTime.now(); //   The current date and time
+            
+        System.out.println(name + "added to tray" + rear + ".");   
+    }  
 }
 
