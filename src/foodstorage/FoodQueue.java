@@ -81,5 +81,16 @@ public class FoodQueue {
             front = (front + 1) % capacity;
         }
     }
+    // Shows the food at the top (front) wihtout removing it.
+    public void peek (){
+        //1. If the is no food, show the error and stop here
+        if(isEmpty()){
+            System.out.println("Error: no data in the system. The storage is empty");
+            return;
+        }
+        //2. Show the name of the food at the front 
+        System.out.println("Item at the top: " + names[front]);
+        
+    }
 }
 
