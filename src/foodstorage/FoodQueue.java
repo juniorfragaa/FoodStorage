@@ -59,7 +59,27 @@ public class FoodQueue {
         bestBefore[rear] = date;
         timeAdded[rear] = LocalDateTime.now(); //   The current date and time
             
-        System.out.println(name + "added to tray" + rear + ".");   
+        System.out.println(name + " added to tray " + rear + ".");   
     }  
+    // Removes the oldest food item (the one at the front)
+    public void dequeue (){
+        //1. If there is no food, show the error and stop here.
+        if(isEmpty()){
+            System.out.println("Error: no data in the system. The storage is empty");
+            return;
+        }
+        
+        //2. Show which food is leaving
+        System.out.println(names[front] + " removed from tray " + front);
+        
+        //3. If it was the last food, the queue becomes empty again
+        if (front == rear) {
+            front = -1;
+            rear = -1;
+        } else {
+        // 4. Otherwise, front moves to the next tray (back to 0 after the last one)
+            front = (front + 1) % capacity;
+        }
+    }
 }
 
