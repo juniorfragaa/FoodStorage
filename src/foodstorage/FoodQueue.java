@@ -28,9 +28,14 @@ public class FoodQueue {
         this.bestBefore = new LocalDate[capacity];    // start as null
         this.timeAdded = new LocalDateTime[capacity]; // start as null     
     
-        this.front = -1;  // -1 = not poiting to any tray
+        this.front = -1;  // -1 = not pointing to any tray
         this.rear = -1;   // so the queue starts empty
-    
+    }   
+    public boolean isEmpty(){
+        return front == -1; // Return true if the storage has no food
+    }
+    public boolean isFull(){
+        return (rear + 1) % capacity == front; // returns true if there is no free tray left
     }
 }
 
