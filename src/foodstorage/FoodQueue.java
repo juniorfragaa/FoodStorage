@@ -90,7 +90,33 @@ public class FoodQueue {
         }
         //2. Show the name of the food at the front 
         System.out.println("Item at the top: " + names[front]);
-        
     }
+    // Shows all foods items, from the oldest (front) to the newest (rear)
+    public void display (){
+        //1. If there is no food, show the error and stop here
+        if(isEmpty()){
+            System.out.println("Error: no data in the system. The storage is empty.");
+            return;
+        }
+        System.out.println("Food in the storage (oldest to newest): ");
+        //2. Start at the front
+        int i = front;
+        
+        //3. Repeat: show the food, stop at the rear or move one step
+        while (true) {
+        // Show the food in tray i
+            System.out.println("Tray " + i + ": " + names[i]);
+            System.out.println("   - Weight: " + weights[i] + "g");
+            System.out.println("   - Best Before: " + bestBefore[i]);
+            System.out.println("   - Added: " + timeAdded[i]);
+            
+            if(i == rear){ 
+                break; // this is the rear (the last food), so stop!
+            }
+            
+            i = (i + 1) % capacity; // move to the next tray (back to 0 after the last one)
+        }
+    }
+    
 }
 
