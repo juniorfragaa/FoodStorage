@@ -12,7 +12,7 @@ public class FoodQueue {
     private LocalDateTime[] timeAdded;          // date and time it was place into the storage
     private int[] ids;                          // ID number of each food item
     
-    private int capacity; //How many trys the storage has
+    private int capacity; //How many trays the storage has
                           // This is the number the chef chooses. The last index is always capacity -1
     
     private int front;    // index of the oldest item (the next one to leave)
