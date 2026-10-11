@@ -10,13 +10,14 @@ public class FoodQueue {
     private int[] weights;                      // Weight in grams
     private LocalDate[] bestBefore;             // best-before date
     private LocalDateTime[] timeAdded;          // date and time it was place into the storage
-    
+    private int[] ids;                          // ID number of each food item
     
     private int capacity; //How many trys the storage has
                           // This is the number the chef chooses. The last index is always capacity -1
     
     private int front;    // index of the oldest item (the next one to leave)
     private int rear;     // index of the newest item (the last one added)
+    private int nextId;   // the ID next food will get (1, 2, 3)
     
     // CONSTRUCTOR = runs once when the queue is created.
     public FoodQueue(int capacity){
@@ -26,10 +27,12 @@ public class FoodQueue {
         this.names = new String[capacity];            // starts as null (empty)
         this.weights = new int[capacity];             // start as 0
         this.bestBefore = new LocalDate[capacity];    // start as null
-        this.timeAdded = new LocalDateTime[capacity]; // start as null     
+        this.timeAdded = new LocalDateTime[capacity]; // start as null 
+        this.ids = new int[capacity];                 // creates the array, same size as the others
     
         this.front = -1;  // -1 = not pointing to any tray
         this.rear = -1;   // so the queue starts empty
+        this.nextId = 1;  // the first food will get ID 1
     }   
     
     public boolean isEmpty(){
@@ -58,8 +61,10 @@ public class FoodQueue {
         weights [rear] = weight;
         bestBefore[rear] = date;
         timeAdded[rear] = LocalDateTime.now(); //   The current date and time
+        ids[rear] = nextId;                    // this foods gets the next ID
+        nextId++;                              // the next food will get the number after this one
             
-        System.out.println(name + " added to tray " + rear + ".");   
+        System.out.println(name + " added to tray " + rear + " with ID " + ids[rear] + ".");   
     }  
     // Removes the oldest food item (the one at the front)
     public void dequeue (){
@@ -105,7 +110,8 @@ public class FoodQueue {
         //3. Repeat: show the food, stop at the rear or move one step
         while (true) {
         // Show the food in tray i
-            System.out.println("Tray " + i + ": " + names[i]);
+            System.out.println("Tray " + i + ": " + names[i] );
+            System.out.println("   - ID: " + ids[i]);
             System.out.println("   - Weight: " + weights[i] + "g");
             System.out.println("   - Best Before: " + bestBefore[i]);
             System.out.println("   - Added: " + timeAdded[i]);
@@ -116,6 +122,32 @@ public class FoodQueue {
             
             i = (i + 1) % capacity; // move to the next tray (back to 0 after the last one)
         }
+    }
+    //  Looks for the food with the ID the chef typed.
+    public void searchById(int id){
+        //1. If there is no food, show the error and stop here
+        if(isEmpty()){
+            System.out.println("Error: no data in the system. The storage is empty.");
+            return;
+        }
+        // 2. Start as the front
+        int i = front;
+        
+        while(true){
+            //3. Is this the ID the chef wants? Shot it and stop
+            if (ids[i] == id){
+                System.out.println("Found in tray " + i + ":" + names [i]);
+                return;
+            }
+            //4. This is the rear (the last food), so stop looking.
+            if (i == rear){
+                break;
+            }
+            // 5. Move to the next tray (back to 0 after the last one)
+            i = (i + 1) % capacity;
+        }
+            // 6. We checked every food and did not find it
+            System.out.println("No food with ID " + id + "in the storage.");
     }
     
 }
