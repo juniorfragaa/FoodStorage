@@ -146,9 +146,8 @@ public class FoodQueue {
             // 5. Move to the next tray (back to 0 after the last one)
             i = (i + 1) % capacity;
         }
-            // 6. We checked every food and did not find it
-            System.out.println("No food with ID " + id + "in the storage.");
-    }
-    
+        // 6. We checked every food and did not find it
+        System.out.println("No food with ID " + id + "in the storage.");
+    }   
 }
 
