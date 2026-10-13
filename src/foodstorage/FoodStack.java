@@ -34,12 +34,51 @@ public class FoodStack {
         this.top = -1;       // the stack starts empty
         this.nextId = 1;     // the first food will get ID 1
     }
+    
     // O(1) - the stack is empty when top is -1
     public boolean isEmpty(){
         return top == -1;
     }
+    
     // O(1) - the stack is full when top is at the last tray
     public boolean isFull(){
         return top == capacity - 1;
     }
+    
+    public void push (String name, int weight, LocalDate date){
+        //1. If there is no free tray, stop here
+        if (isFull()){
+            System.out.println("Error: the storage is full. Remove an item first");
+            return;
+        }
+        
+        //2. Move top one step up
+        top++;
+        
+        //3. Save the food data ub the same index of every array
+        names[top] = name;
+        weights[top] = weight;
+        bestBefore[top] = date;
+        timeAdded[top] = LocalDateTime.now();
+        ids[top] = nextId;
+        nextId++;
+        
+        System.out.println(name + " added to tray " + top + " with ID " + ids[top] + ".");
+    }
+    
+    //Removes the food on the top (the last one added)
+    //O(1) - only top moves, no other food is moved
+    public void pop(){
+        //1. If there is no food, show the error and stop here
+        if (isEmpty()){
+            System.out.println("Error: no data in the system. The storage is empty.");
+            return;
+        }
+        //2. Show which food is leaving 
+        System.out.println(names[top] + " removed from tray " + ".");
+        
+        //3. Move top one step down (from 0 it goes to -1 = empty 
+        top--;
+    }
+    
 }
