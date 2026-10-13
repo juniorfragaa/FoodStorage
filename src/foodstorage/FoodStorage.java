@@ -15,6 +15,7 @@ public class FoodStorage {
         
         //Ask the chef which data structure to use
         int type = 0;     //starts invalid, so the loop asks at least once
+       
         do{
             System.out.println("===== CHOOSE STORAGE TYPE =====");
             System.out.println("1. Queue (FIFO) - add at one side, remove from the other side");
@@ -115,9 +116,23 @@ public class FoodStorage {
                     
                     //The menu starts at 1, but the array stats at 0, so we use -1
                     String name = foods[foodChoice - 1];
-            
-                    System.out.print("Weight in grams: ");
-                    int weight = input.nextInt();                           // reads a whole number
+                    
+                    int weight = 0;
+                    
+                    do {
+                        System.out.print("Weight in grams: ");
+                    
+                        try{
+                            weight = input.nextInt();                           // reads a whole number
+                            if(weight < 1){
+                                System.out.println("Invalid weight. It must be more than 0 grams.");
+                            }
+                        }catch(Exception e){
+                            System.out.println("That is not a number. Please type a number.");
+                            input.next();
+                        }
+                    } while (weight < 1);
+                    
                     System.out.print("Best-before date (yyyy-MM-dd): ");
                     LocalDate date = LocalDate.parse(input.next());         // turns the text into a date
                     
