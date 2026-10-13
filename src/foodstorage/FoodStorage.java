@@ -9,6 +9,10 @@ public class FoodStorage {
     public static void main(String[] args) {
     
         Scanner input = new Scanner (System.in); // input = the keyboard 
+        
+        // The 5 food types the restaurant has 
+        String[] foods = {"Burger", "Pizza", "Fries", "Sandwich", "Hotdog"};
+        
         int capacity = 0; // starts invalid, so the loop keeps asking until it is valid
         
         do{
@@ -56,15 +60,26 @@ public class FoodStorage {
 
                 // 1 = Add food: ask the chef for the food data, then add it at the rear
                 case 1:
-                    System.out.print("Food name: ");
-                    String name = input.next();                       // reads one word
+                    // Show the food list
+                    System.out.println("Choose the food:");
+                    System.out.println("1. Burger   🍔");
+                    System.out.println("2. Pizza    🍕");
+                    System.out.println("3. Fries    🍟");
+                    System.out.println("4. Sandwich 🥪");
+                    System.out.println("5. Hotdog   🌭");
+                    System.out.print("Choose: ");
+                    int foodChoice = input.nextInt();
+                    
+                    //The menu starts at 1, but the array stats at 0, so we use -1
+                    String name = foods[foodChoice - 1];
+                    
                     System.out.print("Weight in grams: ");
                     int weight = input.nextInt();                     // reads a whole number
                     System.out.print("Best-before date (yyyy-MM-dd): ");
                     LocalDate date = LocalDate.parse(input.next());   // turns the text into a date
                     storage.enqueue(name, weight, date);              // O(1)
                     break;
-
+                    
                 // 2 = Remove food: the oldest food (front) leaves first
                 case 2:
                     storage.dequeue();      // O(1)
