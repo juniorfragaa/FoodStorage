@@ -2,27 +2,28 @@ package foodstorage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /*
  * FoodStack - Stack (LIFO: Last In, First Out)
  * The chef adds and removes food from the SAME side (the top).
- * The last food added is the first one to leave.
+ * The last food added is the first one to leave, like a pile of plates.
+ * Simpler than the queue: top only goes up and down, it never goes around.
  */
-
 public class FoodStack {
-    // The same index in every array = the same food item (same as FoodQueue)
 
-    private String [] names;                // food name (Burger, Pizza...)
-    private int [] weights;                 // weight in grams
-    private LocalDate[] bestBefore;         // best-before date
-    private LocalDateTime[] timeAdded;      // date and time it was placed into the storage
-    private int[] ids;                      // ID number of each food item
+    // Parallel arrays, organised the same way as in FoodQueue
+    private String [] names;
+    private int [] weights;
+    private LocalDate[] bestBefore;
+    private LocalDateTime[] timeAdded;
+    private int[] ids;
 
-    private int capacity;                   //how many trays the storage has
+    private int capacity;
     private int top;                        // index of the food on top (the last one added)
-    private int nextId;                     // the ID the next food will get
+    private int nextId;
 
-    // CONSTRUCTOR = runs once when the stack is created
+    // CONSTRUCTOR = runs once when the stack is created with new FoodStack(capacity)
     public FoodStack(int capacity){
         this.capacity = capacity;
         this.names = new String [capacity];
@@ -31,109 +32,105 @@ public class FoodStack {
         this.timeAdded = new LocalDateTime [capacity];
         this.ids = new int [capacity];
 
-        this.top = -1;       // the stack starts empty
-        this.nextId = 1;     // the first food will get ID 1
+        this.top = -1;       // no plate yet: the stack starts empty
+        this.nextId = 1;
     }
-    
-    // O(1) - the stack is empty when top is -1
+
+    // O(1) - top -1 means there is no food on the pile
     public boolean isEmpty(){
         return top == -1;
     }
-    
-    // O(1) - the stack is full when top is at the last tray
+
+    // O(1) - full when top reaches the last tray (no % needed, top never goes around)
     public boolean isFull(){
-        return top == capacity - 1;
+        return top == capacity - 1;         // e.g. capacity 5: trays 0..4, full when top = 4
     }
-    
+
+    // Puts a food item on the top of the pile
+    // O(1) - only top moves, no other food is moved
     public void push (String name, int weight, LocalDate date){
-        //1. If there is no free tray, stop here
         if (isFull()){
             System.out.println("Error: the storage is full. Remove an item first");
             return;
         }
-        
-        //2. Move top one step up
+
+        // ++ works here: on the first push top goes from -1 to 0
         top++;
-        
-        //3. Save the food data ub the same index of every array
+
+        // The new plate goes on top: every array uses the same index (top)
         names[top] = name;
         weights[top] = weight;
         bestBefore[top] = date;
         timeAdded[top] = LocalDateTime.now();
         ids[top] = nextId;
         nextId++;
-        
+
         System.out.println(name + " added to tray " + top + " with ID " + ids[top] + ".");
     }
-    
-    //Removes the food on the top (the last one added)
-    //O(1) - only top moves, no other food is moved
+
+    // Takes the food from the top (the last one added)
+    // O(1) - only top moves
     public void pop(){
-        //1. If there is no food, show the error and stop here
+        // Checked first in every reading operation, so an empty stack never causes an error
         if (isEmpty()){
             System.out.println("Error: no data in the system. The storage is empty.");
             return;
         }
-        //2. Show which food is leaving 
         System.out.println(names[top] + " removed from tray " + top + ".");
 
-        //3. Move top one step down (from 0 it goes to -1 = empty)
+        // No special case for the last food: from 0, top goes to -1 (empty) by itself
         top--;
     }
 
-    // Shows the food on the top of the stack, without removing it
+    // Shows the food on the top of the pile, without taking it
     // O(1) - goes straight to the top index
     public void peek() {
-        // 1. If there is no food, show the error and stop here
         if (isEmpty()) {
             System.out.println("Error: no data in the system. The storage is empty.");
             return;
         }
-        // 2. Show the name of the food on the top
-        System.out.println("Item at the top: " + names[top]);
+        System.out.println("Item at the top: " + names[top]);  // the food pop() would remove next
     }
 
-    //Shows all food items, from the top (newest) to the bottom (oldest)
-    //O(n) - it visits every item once
+    // Shows all food items, from the top (newest) to the bottom (oldest)
+    // O(n) - it visits every item once
     public void display(){
-        // 1. If there is no food, show the error and stop here
         if (isEmpty()){
             System.out.println("Error: no data in the system. The storage is empty.");
             return;
         }
         System.out.println("Food in the storage (top to bottom):");
-        
-        //2. Start at the top and go down until tray 0
+
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        // >= 0 so that the bottom plate (tray 0) is also shown
         int i = top;
         while (i >= 0){
             System.out.println("Tray " + i + ": " + names[i]);
             System.out.println("    - ID: " + ids[i]);
-            System.out.println("    - Weights: " + weights [i] + " g");
-            System.out.println("    - Best Before: " + bestBefore[i]);
-            System.out.println("    - Added: " + timeAdded[i]);
-            i--; // move on tray down
+            System.out.println("    - Weight: " + weights [i] + " g");
+            System.out.println("    - Best Before: " + bestBefore[i].format(dateFormat));
+            System.out.println("    - Added: " + timeAdded[i].format(dateTimeFormat));
+            i--;                            // one plate down
         }
     }
-    //Looks for the food with the ID the chef typed
-    //O(n) - in the worst case it checks every food
+
+    // Looks for the food with the ID the chef typed, from the top down (linear search)
+    // O(n) - in the worst case the food is at the bottom, or does not exist
     public void searchById(int id){
-            //1. If there is no food, show the error and stop here
         if(isEmpty()){
             System.out.println("Error: no data in the system. The storage is empty");
             return;
         }
-            //2. Start at the top and go down until tray 0
         int i = top;
         while (i >= 0){
-            //3. Is this the ID the chef wants? Show it and stop
             if (ids[i] == id){
                 System.out.println("Found in tray " + i + ": " + names[i]);
-                return;
+                return;                     // stops at the first match
             }
-            i--; //move one tray down
+            i--;
         }
-        
-        //4. We checked every food and did not find it
-        System.out.println("No food with ID " + id + " in the storage.");
+        System.out.println("No food with ID " + id + " in the storage.");  // reached the bottom without a match
     }
 }

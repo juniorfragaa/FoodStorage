@@ -4,102 +4,101 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-
+/*
+ * FoodStorage - the main class (the menu the chef uses).
+ * It reads and validates what the chef types, and calls the chosen
+ * data structure: FoodQueue (FIFO) or FoodStack (LIFO).
+ */
 public class FoodStorage {
 
-    public static void main(String[] args) {
-    
-        Scanner input = new Scanner (System.in); // input = the keyboard 
-        
-        // The 5 food types the restaurant has 
+    public static void main(String[] args) {                 // the program starts here
+
+        Scanner input = new Scanner (System.in); // reads what the chef types on the keyboard
+
+        // The 5 food types the restaurant has (index 0 to 4)
         String[] foods = {"Burger", "Pizza", "Fries", "Sandwich", "Hotdog"};
-        
-        //Ask the chef which data structure to use
-        int type = 0;     //starts invalid, so the loop asks at least once
-       
+
+        // Ask the chef which data structure to use.
+        // Every question below follows the same pattern: the variable starts with an
+        // invalid value, so the do-while asks at least once and repeats until it is valid.
+        int type = 0;
+
         do{
             System.out.println("===== CHOOSE STORAGE TYPE =====");
             System.out.println("1. Queue (FIFO) - add at one side, remove from the other side");
             System.out.println("2. Stack (LIFO) - add and remove from the same side");
-            System.out.print("Choose: ");
-            
+            System.out.print("Choose: ");                     // print (no ln) keeps the answer on the same line
+
             try{
-                type = input.nextInt();
-                if(type < 1 || type > 2){
+                type = input.nextInt();                       // try: this line fails if the chef types letters
+                if(type < 1 || type > 2){                     // || = OR
                     System.out.println("Invalid option. Please choose 1 or 2.");
-                } 
+                }
             }catch (Exception e) {
+                // nextInt() fails when the chef types letters (e.g. "abc")
                 System.out.println("That is not a number. Please type a number.");
-                input.next(); // clear the letter, so the chef can type again
-                        }
-            }while (type < 1 || type > 2);
-        
-        
-        int capacity = 0; // starts invalid, so the loop keeps asking until it is valid
-        
+                input.next(); // removes the wrong text, otherwise nextInt() would read it again forever
+            }
+        }while (type < 1 || type > 2);                       
+
+        // Ask how many trays the storage will have (maximum 10)
+        int capacity = 0;                                    
         do{
-        // Ask the chef how many trays the storage will have
-        System.out.print("How many trays does the storage have? (1-10): ");           
-            
+            System.out.print("How many trays does the storage have? (1-10): ");
+
             try{
-                capacity = input.nextInt(); //Try to read a number
-                
+                capacity = input.nextInt();
                 if (capacity < 1 || capacity > 10){
-                System.out.println("Invalid number. Please choose between 1 and 10.");
-                } 
+                    System.out.println("Invalid number. Please choose between 1 and 10.");
+                }
             }catch (Exception e){
-                // The chef typed letter ("abc", so nextInt() failed
-                System.out.println("That is not a number. Please type a number");
-                    input.next(); // clear the letter, so the chef can type again
-                    }
-        } while (capacity < 1 || capacity > 10); // Ask again while the number is invalid 
-        
-        
-        // Create both structures with the size the chef chose
-        // The manu will only use the one the chef picked (type 1 or 2)
-        FoodQueue queue = new FoodQueue(capacity);
+                System.out.println("That is not a number. Please type a number.");
+                input.next();
+            }
+        } while (capacity < 1 || capacity > 10);
+
+        // Both structures are created with the chosen size,
+        // but the menu only uses the one the chef picked (type 1 or 2)
+        FoodQueue queue = new FoodQueue(capacity);            // calls the FoodQueue constructor
         FoodStack stack = new FoodStack(capacity);
         System.out.println("Storage created with: " + capacity + " Trays. ");
-        
-        int option; //The option the chef chooses (declared here so the while can see it)
+
+        int option; // declared outside the do-while so the while condition can see it
         do{
-            System.out.println();
+            System.out.println();                             // empty line, so the menu is not stuck to the text above
             System.out.println("===== FOOD STORAGE MENU ======");
-            System.out.println("1. Add food");                  //enqueue
-            System.out.println("2. Remove food");               //dequeue 
-            System.out.println("3. Display food at the top");   //peek
-            System.out.println("4. Display all food");          //display
-            System.out.println("5. Search by ID");              //search by ID
-            System.out.println("0. Exit");                      //exit
+            System.out.println("1. Add food");                  // enqueue / push
+            System.out.println("2. Remove food");               // dequeue / pop
+            System.out.println("3. Display food at the top");   // peek
+            System.out.println("4. Display all food");          // display
+            System.out.println("5. Search by ID");              // searchById
+            System.out.println("0. Exit");
             System.out.print("Choose an option: ");
-            
+
             try{
-                option = input.nextInt(); // Try to read the option
+                option = input.nextInt();
             } catch (Exception e) {
-                input.next(); // Clear the letter, so the chef can type again
-                option = -1;  // not a menu option, so the switch goes to default
+                input.next();
+                option = -1;  // -1 is not on the menu, so the switch goes to default (0 would exit)
             }
-            
-            
-            //Do what the chef chose 
-            switch (option) {
+
+            switch (option) {                                 // each case is one menu option
 
                 // 0 = Exit: the do-while stops because option is 0
                 case 0:
                     System.out.println("Okay, Goodbye!! ");
-                    break;
+                    break;                                    // break ends the case (without it, the next case would run too)
 
-                // 1 = Add food: ask the chef for the food data, then add it at the rear
+                // 1 = Add food: ask for the food type, weight and best-before date
                 case 1:
-                    // Show the food list
                     System.out.println("Choose the food:");
                     System.out.println("1. Burger   🍔");
                     System.out.println("2. Pizza    🍕");
                     System.out.println("3. Fries    🍟");
                     System.out.println("4. Sandwich 🥪");
                     System.out.println("5. Hotdog   🌭");
-                   
-                    int foodChoice = 0; // starts invalid, so the loop asks at least once
+
+                    int foodChoice = 0;
 
                     do {
                         System.out.print("Choose: ");
@@ -110,21 +109,20 @@ public class FoodStorage {
                             }
                         } catch (Exception e) {
                             System.out.println("That is not a number. Please type a number.");
-                            input.next(); // clear the letters, so the chef can type again
+                            input.next();
                         }
                     } while (foodChoice < 1 || foodChoice > 5);
-                    
-                    
-                    //The menu starts at 1, but the array stats at 0, so we use -1
-                    String name = foods[foodChoice - 1];
-                    
+
+                    // The menu starts at 1, but the array starts at 0, so we use - 1
+                    String name = foods[foodChoice - 1];      // e.g. choice 3 -> foods[2] -> "Fries"
+
+                    // The weight has no maximum, it only needs to be more than 0 grams
                     int weight = 0;
-                    
+
                     do {
                         System.out.print("Weight in grams: ");
-                    
                         try{
-                            weight = input.nextInt();                           // reads a whole number
+                            weight = input.nextInt();
                             if(weight < 1){
                                 System.out.println("Invalid weight. It must be more than 0 grams.");
                             }
@@ -133,38 +131,38 @@ public class FoodStorage {
                             input.next();
                         }
                     } while (weight < 1);
-                    
+
                     // Best-before date: format dd/MM/yyyy, from today up to 2 weeks
-                    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");  // MM = month (mm would be minutes)
                     LocalDate today = LocalDate.now();
-                    LocalDate maxDate = today.plusDays(14);   // maximum of two weeks
+                    LocalDate maxDate = today.plusDays(14);
                     LocalDate date = null;                    // null = no valid date yet
 
                     do {
                         System.out.print("Best-before date (dd/MM/yyyy): ");
                         try {
-                            date = LocalDate.parse(input.next(), dateFormat);   // reads the date using our format
+                            date = LocalDate.parse(input.next(), dateFormat);  // parse = turns the text into a real date
                             if (date.isBefore(today)) {
                                 System.out.println("Invalid date. This food is already expired.");
-                                date = null;                  // not valid, so ask again
+                                date = null;
                             } else if (date.isAfter(maxDate)) {
                                 System.out.println("Invalid date. The maximum is 2 weeks from today.");
-                                date = null;                  // not valid, so ask again
+                                date = null;
                             }
                         } catch (Exception e) {
-                            // The text is not a real date in the format dd/MM/yyyy (e.g. "abc")
+                            // parse() fails when the text is not a real date in this format (e.g. "abc", "32/10/2026")
                             System.out.println("Invalid date. Please use the format dd/MM/yyyy.");
                         }
-                    } while (date == null);                   // ask again while there is no valid date
-                    
+                    } while (date == null);
+
                     if(type == 1){
-                        queue.enqueue(name, weight, date);          // add at the rear - O(1)
-                    }else {
-                        stack.push(name, weight, date);             // add on the top  - O(1)
+                        queue.enqueue(name, weight, date);          // added at the rear - O(1)
+                    }else {                                         // type 2 = Stack (the only other option)
+                        stack.push(name, weight, date);             // added on the top - O(1)
                     }
                     break;
-                    
-                // 2 = Remove food: the oldest food (front) leaves first, Stack removes the newest
+
+                // 2 = Remove food: the Queue removes the oldest, the Stack removes the newest
                 case 2:
                     if(type == 1){
                         queue.dequeue();       // FIFO - O(1)
@@ -173,41 +171,44 @@ public class FoodStorage {
                     }
                     break;
 
-                // 3 = Show the next food to leave, without removing it
+                // 3 = Show the next food to leave, without removing it - O(1)
                 case 3:
-                   if(type == 1){
-                       queue.peek();          // O(1)
-                   }else {
-                       stack.peek();           // O(1)
-                   }
+                    if(type == 1){
+                        queue.peek();
+                    }else {
+                        stack.peek();
+                    }
                     break;
 
-                // 4 = Show all food in the storage
+                // 4 = Show all food in the storage - O(n)
                 case 4:
                     if(type == 1){
-                        queue.display();      // O(n)
+                        queue.display();
                     }else {
-                        stack.display();      // O(n)
+                        stack.display();
                     }
                     break;
 
-                // 5 = Search: ask the chef for an ID and look for it
+                // 5 = Search: the question is the same for both structures, so it is asked only once - O(n)
                 case 5:
                     System.out.print("Which ID would you like to search?: ");
-                    int id = input.nextInt();
-                    
-                    if(type == 1){
-                        queue.searchById(id); // O(n)
-                    }else{
-                        stack.searchById(id); // O(n)
+                    try {
+                        int id = input.nextInt();
+                        if(type == 1){
+                            queue.searchById(id);
+                        }else{
+                            stack.searchById(id);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("That is not a number. Please type a number.");
+                        input.next();
                     }
                     break;
 
-                // Any other number is not on the menu
-                default:
+                default:                                      // any number that is not a case above
                     System.out.println("Invalid option. Try again.");
                     break;
             }
-        } while (option != 0); //repeat while the option is NOT 0
+        } while (option != 0);                                // != means "is different from"
     }
 }
