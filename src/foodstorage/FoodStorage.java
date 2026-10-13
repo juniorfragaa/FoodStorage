@@ -9,14 +9,29 @@ public class FoodStorage {
     public static void main(String[] args) {
     
         Scanner input = new Scanner (System.in); // input = the keyboard 
-    
+        int capacity = 0; // starts invalid, so the loop keeps asking until it is valid
+        
+        do{
         // Ask the chef how many trays the storage will have
-        System.out.print("How many trays does the storage have? (max 10): ");
-        int capacity = input.nextInt();
+        System.out.print("How many trays does the storage have? (1-10): ");           
+            
+            try{
+                capacity = input.nextInt(); //Try to read a number
+                
+                if (capacity < 1 || capacity > 10){
+                System.out.println("Invalid number. Please choose between 1 and 10.");
+                } 
+            }catch (Exception e){
+                // The chef typed letter ("abc", so nextInt() failed
+                System.out.println("That is not a number. Please type a number");
+                    input.next(); // clear the letter, so the chef can type again
+                    }
+        } while (capacity < 1 || capacity > 10); // Ask again while the number is invalid 
+        
         
         // Create the queue with the number the chef chose 
         FoodQueue storage = new FoodQueue(capacity);
-        System.out.println("Sotage created with: " + capacity + " Trays. ");
+        System.out.println("Storage created with: " + capacity + " Trays. ");
         
         int option; //The option the chef chooses (declared here so the while can see it)
         do{
