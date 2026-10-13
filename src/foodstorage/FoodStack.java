@@ -116,7 +116,7 @@ public class FoodStack {
     }
     //Looks for the food with the ID the chef typed
     //O(n) - in the worst case it checks every food
-    public void searchByID(int id){
+    public void searchById(int id){
             //1. If there is no food, show the error and stop here
         if(isEmpty()){
             System.out.println("Error: no data in the system. The storage is empty");

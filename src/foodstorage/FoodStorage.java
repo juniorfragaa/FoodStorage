@@ -13,6 +13,26 @@ public class FoodStorage {
         // The 5 food types the restaurant has 
         String[] foods = {"Burger", "Pizza", "Fries", "Sandwich", "Hotdog"};
         
+        //Ask the chef which data structure to use
+        int type = 0;     //starts invalid, so the loop asks at least once
+        do{
+            System.out.println("===== CHOOSE STORAGE TYPE =====");
+            System.out.println("1. Queue (FIFO) - add at one side, remove from the other side");
+            System.out.println("2. Stack (LIFO) - add and remove from the same side");
+            System.out.print("Choose: ");
+            
+            try{
+                type = input.nextInt();
+                if(type < 1 || type > 2){
+                    System.out.println("Invalid option. Please choose 1 or 2.");
+                } 
+            }catch (Exception e) {
+                System.out.println("That is not a number. Please type a number.");
+                input.next(); // clear the letter, so the chef can type again
+                        }
+            }while (type < 1 || type > 2);
+        
+        
         int capacity = 0; // starts invalid, so the loop keeps asking until it is valid
         
         do{
@@ -33,8 +53,10 @@ public class FoodStorage {
         } while (capacity < 1 || capacity > 10); // Ask again while the number is invalid 
         
         
-        // Create the queue with the number the chef chose 
-        FoodQueue storage = new FoodQueue(capacity);
+        // Create both structures with the size the chef chose
+        // The manu will only use the one the chef picked (type 1 or 2)
+        FoodQueue queue = new FoodQueue(capacity);
+        FoodStack stack = new FoodStack(capacity);
         System.out.println("Storage created with: " + capacity + " Trays. ");
         
         int option; //The option the chef chooses (declared here so the while can see it)
@@ -95,32 +117,54 @@ public class FoodStorage {
                     String name = foods[foodChoice - 1];
             
                     System.out.print("Weight in grams: ");
-                    int weight = input.nextInt();                     // reads a whole number
+                    int weight = input.nextInt();                           // reads a whole number
                     System.out.print("Best-before date (yyyy-MM-dd): ");
-                    LocalDate date = LocalDate.parse(input.next());   // turns the text into a date
-                    storage.enqueue(name, weight, date);              // O(1)
+                    LocalDate date = LocalDate.parse(input.next());         // turns the text into a date
+                    
+                    if(type == 1){
+                        queue.enqueue(name, weight, date);          // add at the rear - O(1)
+                    }else {
+                        stack.push(name, weight, date);             // add on the top  - O(1)
+                    }
                     break;
                     
-                // 2 = Remove food: the oldest food (front) leaves first
+                // 2 = Remove food: the oldest food (front) leaves first, Stack removes the newest
                 case 2:
-                    storage.dequeue();      // O(1)
+                    if(type == 1){
+                        queue.dequeue();       // FIFO - O(1)
+                    } else {
+                        stack.pop();           // LIFO - O(1)
+                    }
                     break;
 
-                // 3 = Show the food at the top (front), without removing it
+                // 3 = Show the next food to leave, without removing it
                 case 3:
-                    storage.peek();         // O(1)
+                   if(type == 1){
+                       queue.peek();          // O(1)
+                   }else {
+                       stack.peek();           // O(1)
+                   }
                     break;
 
-                // 4 = Show all food, from the oldest to the newest
+                // 4 = Show all food in the storage
                 case 4:
-                    storage.display();      // O(n)
+                    if(type == 1){
+                        queue.display();      // O(n)
+                    }else {
+                        stack.display();      // O(n)
+                    }
                     break;
 
                 // 5 = Search: ask the chef for an ID and look for it
                 case 5:
                     System.out.print("Which ID would you like to search?: ");
                     int id = input.nextInt();
-                    storage.searchById(id); // O(n)
+                    
+                    if(type == 1){
+                        queue.searchById(id); // O(n)
+                    }else{
+                        stack.searchById(id); // O(n)
+                    }
                     break;
 
                 // Any other number is not on the menu
