@@ -1,6 +1,7 @@
 package foodstorage;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 
@@ -133,8 +134,28 @@ public class FoodStorage {
                         }
                     } while (weight < 1);
                     
-                    System.out.print("Best-before date (yyyy-MM-dd): ");
-                    LocalDate date = LocalDate.parse(input.next());         // turns the text into a date
+                    // Best-before date: format dd/MM/yyyy, from today up to 2 weeks
+                    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate today = LocalDate.now();
+                    LocalDate maxDate = today.plusDays(14);   // maximum of two weeks
+                    LocalDate date = null;                    // null = no valid date yet
+
+                    do {
+                        System.out.print("Best-before date (dd/MM/yyyy): ");
+                        try {
+                            date = LocalDate.parse(input.next(), dateFormat);   // reads the date using our format
+                            if (date.isBefore(today)) {
+                                System.out.println("Invalid date. This food is already expired.");
+                                date = null;                  // not valid, so ask again
+                            } else if (date.isAfter(maxDate)) {
+                                System.out.println("Invalid date. The maximum is 2 weeks from today.");
+                                date = null;                  // not valid, so ask again
+                            }
+                        } catch (Exception e) {
+                            // The text is not a real date in the format dd/MM/yyyy (e.g. "abc")
+                            System.out.println("Invalid date. Please use the format dd/MM/yyyy.");
+                        }
+                    } while (date == null);                   // ask again while there is no valid date
                     
                     if(type == 1){
                         queue.enqueue(name, weight, date);          // add at the rear - O(1)
