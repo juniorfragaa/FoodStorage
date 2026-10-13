@@ -48,7 +48,14 @@ public class FoodStorage {
             System.out.println("5. Search by ID");              //search by ID
             System.out.println("0. Exit");                      //exit
             System.out.print("Choose an option: ");
-            option = input.nextInt();
+            
+            try{
+                option = input.nextInt(); // Try to read the option
+            } catch (Exception e) {
+                input.next(); // Clear the letter, so the chef can type again
+                option = -1;  // not a menu option, so the switch goes to default
+            }
+            
             
             //Do what the chef chose 
             switch (option) {
@@ -67,12 +74,26 @@ public class FoodStorage {
                     System.out.println("3. Fries    🍟");
                     System.out.println("4. Sandwich 🥪");
                     System.out.println("5. Hotdog   🌭");
-                    System.out.print("Choose: ");
-                    int foodChoice = input.nextInt();
+                   
+                    int foodChoice = 0; // starts invalid, so the loop asks at least once
+
+                    do {
+                        System.out.print("Choose: ");
+                        try {
+                            foodChoice = input.nextInt();
+                            if (foodChoice < 1 || foodChoice > 5) {
+                                System.out.println("Invalid food. Please choose between 1 and 5.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("That is not a number. Please type a number.");
+                            input.next(); // clear the letters, so the chef can type again
+                        }
+                    } while (foodChoice < 1 || foodChoice > 5);
+                    
                     
                     //The menu starts at 1, but the array stats at 0, so we use -1
                     String name = foods[foodChoice - 1];
-                    
+            
                     System.out.print("Weight in grams: ");
                     int weight = input.nextInt();                     // reads a whole number
                     System.out.print("Best-before date (yyyy-MM-dd): ");
