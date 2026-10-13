@@ -75,10 +75,65 @@ public class FoodStack {
             return;
         }
         //2. Show which food is leaving 
-        System.out.println(names[top] + " removed from tray " + ".");
-        
-        //3. Move top one step down (from 0 it goes to -1 = empty 
+        System.out.println(names[top] + " removed from tray " + top + ".");
+
+        //3. Move top one step down (from 0 it goes to -1 = empty)
         top--;
     }
-    
+
+    // Shows the food on the top of the stack, without removing it
+    // O(1) - goes straight to the top index
+    public void peek() {
+        // 1. If there is no food, show the error and stop here
+        if (isEmpty()) {
+            System.out.println("Error: no data in the system. The storage is empty.");
+            return;
+        }
+        // 2. Show the name of the food on the top
+        System.out.println("Item at the top: " + names[top]);
+    }
+
+    //Shows all food items, from the top (newest) to the bottom (oldest)
+    //O(n) - it visits every item once
+    public void display(){
+        // 1. If there is no food, show the error and stop here
+        if (isEmpty()){
+            System.out.println("Error: no data in the system. The storage is empty.");
+            return;
+        }
+        System.out.println("Food in the storage (top to bottom):");
+        
+        //2. Start at the top and go down until tray 0
+        int i = top;
+        while (i >= 0){
+            System.out.println("Tray " + i + ": " + names[i]);
+            System.out.println("    - ID: " + ids[i]);
+            System.out.println("    - Weights: " + weights [i] + " g");
+            System.out.println("    - Best Before: " + bestBefore[i]);
+            System.out.println("    - Added: " + timeAdded[i]);
+            i--; // move on tray down
+        }
+    }
+    //Looks for the food with the ID the chef typed
+    //O(n) - in the worst case it checks every food
+    public void searchByID(int id){
+            //1. If there is no food, show the error and stop here
+        if(isEmpty()){
+            System.out.println("Error: no data in the system. The storage is empty");
+            return;
+        }
+            //2. Start at the top and go down until tray 0
+        int i = top;
+        while (i >= 0){
+            //3. Is this the ID the chef wants? Show it and stop
+            if (ids[i] == id){
+                System.out.println("Found in tray " + i + ": " + names[i]);
+                return;
+            }
+            i--; //move one tray down
+        }
+        
+        //4. We checked every food and did not find it
+        System.out.println("No food with ID " + id + " in the storage.");
+    }
 }
