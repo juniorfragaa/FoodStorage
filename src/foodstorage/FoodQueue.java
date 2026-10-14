@@ -4,13 +4,13 @@ import java.time.LocalDate;                     // stores only a date
 import java.time.LocalDateTime;                 // stores date + time
 import java.time.format.DateTimeFormatter;      // shows dates as dd/MM/yyyy
 
-/*
- * FoodQueue - Circular Queue (FIFO: First In, First Out)
- * The chef adds food at one side (rear) and removes it from the other side (front).
- * The oldest food leaves first, so it does not pass its best-before date.
- * It is circular: when an index reaches the last tray, it goes back to 0,
- * so the free trays are reused and no food ever needs to be shifted.
- */
+
+ //FoodQueue - Circular Queue (FIFO: First In, First Out)
+ //The chef adds food at one side (rear) and removes it from the other side (front).
+ //The oldest food leaves first, so it does not pass its best-before date.
+ //It is circular: when an index reaches the last tray, it goes back to 0,
+ //so the free trays are reused and no food ever needs to be shifted.
+ 
 public class FoodQueue {
 
     // Parallel arrays: the same index in every array = the same food item

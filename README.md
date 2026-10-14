@@ -1,4 +1,4 @@
-# Fast-Food Party Storage
+# Fast-Food Storage
 
 A simple Java console application, which stores data about fast-food (Burger, Pizza, Fries, Sandwich, Hotdog) in storage with a capacity of up to 10 trays. Each item has a name, weight in grams, best-before date (with a maximum of 2 weeks) and time of addition to storage.
 

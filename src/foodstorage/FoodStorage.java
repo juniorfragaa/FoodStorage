@@ -4,11 +4,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-/*
- * FoodStorage - the main class (the menu the chef uses).
- * It reads and validates what the chef types, and calls the chosen
- * data structure: FoodQueue (FIFO) or FoodStack (LIFO).
- */
+
+ // FoodStorage - the main class (the menu the chef uses).
+ // It reads and validates what the chef types, and calls the chosen
+ // data structure: FoodQueue (FIFO) or FoodStack (LIFO).
 public class FoodStorage {
 
     public static void main(String[] args) {                 // the program starts here
@@ -89,7 +88,7 @@ public class FoodStorage {
                     System.out.println("Okay, Goodbye!! ");
                     break;                                    // break ends the case (without it, the next case would run too)
 
-                // 1 = Add food: ask for the food type, weight and best-before date
+                // 1 = Add food: ask for the food type, its name, weight and best-before date
                 case 1:
                     System.out.println("Choose the food:");
                     System.out.println("1. Burger   🍔");
@@ -113,8 +112,23 @@ public class FoodStorage {
                         }
                     } while (foodChoice < 1 || foodChoice > 5);
 
+                    // nextInt() leaves the Enter in the input, so nextLine() would read an empty line.
+                    // This clears it before asking for the name.
+                    input.nextLine();
+
+                    // The chef types a name so two foods of the same type can be told apart (e.g. "Cheese Burger")
+                    String foodName = "";
+                    while (foodName.isEmpty()) {
+                        System.out.print("Food name (e.g. Cheese Burger): ");
+                        foodName = input.nextLine().trim();   // nextLine() reads the whole line, spaces included
+                        if (foodName.isEmpty()) {
+                            System.out.println("The name cannot be empty. Please type a name.");
+                        }
+                    }
+
                     // The menu starts at 1, but the array starts at 0, so we use - 1
-                    String name = foods[foodChoice - 1];      // e.g. choice 3 -> foods[2] -> "Fries"
+                    // e.g. choice 1 + "Cheese Burger" -> "Burger - Cheese Burger"
+                    String name = foods[foodChoice - 1] + " - " + foodName;
 
                     // The weight has no maximum, it only needs to be more than 0 grams
                     int weight = 0;
